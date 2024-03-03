@@ -3,6 +3,7 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const axios = require('axios');
 
 const app = express(); // Crea aplicación Express
 app.use(express.json());
@@ -138,6 +139,29 @@ app.post('/guardarActividad', (req, res) => {
         res.send('Datos de actividad guardados correctamente');
     });
 });
+
+// Endpoint para guardar datos de actividad
+app.post('/guardarPersonalizacion', (req, res) => {
+    const idPaciente = req.body.userId;
+
+    const query = `
+        INSERT INTO personalizacion
+        (id_paciente, numero_bloqueos, velocidad_media, numero_pasos, duracion) 
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.query(query, [idPaciente, bloqueos, velocidadMedia, Ptotal, actividadMin], (error, results) => {
+        if (error) {
+            console.error('Error al insertar en la base de datos:', error);
+            res.status(500).send('Error al guardar datos de actividad');
+            return;
+        }
+
+        res.send('Datos de actividad guardados correctamente');
+    });
+});
+
+
 
 // Nueva ruta para obtener datos del paciente
 app.get('/datosPaciente', (req, res) => {

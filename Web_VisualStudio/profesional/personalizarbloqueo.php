@@ -60,12 +60,30 @@
                         actualizarDatosRecuadro(data);
                     });
             } 
-            
+            function finalizarYConfirmarPersonalizacion() {
+                sendCommand('0'); // Enviar comando para finalizar la actividad
+                const form = new FormData();
+                form.append('totalPasos', data.Ptotal);
+                form.append('totalduracion',data.actividadMin)
+
+                // Enviar el formulario al servidor PHP
+                fetch('http://localhost:3000/personalizarbloqueo.php', {
+                    method: 'POST',
+                    body: form,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // Confirmación de envío del formulario
+                });
+
+                setTimeout(function() {
+                    confirmarAccion('finalizarPersonalizacion'); // MoPstrar mensaje de confirmación después de un corto retraso
+                }, 2000); // Ajusta el tiempo de espera según sea necesario
+
+            }
             function actualizarDatosRecuadro(data) {
                 let htmlContent = "";
-                if (data.Ptotal>10){
-                            htmlContent += "<button onclick='finalizarYConfirmarPersonalizacion()'>Finalizar personalización</button>";                           
-                        }
+
                 if (data.izquierda) {
                     // Mostrar mensaje parpadeante
                     htmlContent = "<p class='parpadeante'>IZQUIERDA</p>";
@@ -86,7 +104,9 @@
                         <p>Total de Pasos: ${data.Ptotal}</p>
                         <p>Actividad (min): ${data.actividadMin}</p>
                         <p>Velocidad Media: ${data.velocidadMedia}</p>`;
-
+                        if (data.Ptotal> 10) {
+                        htmlContent += "<button onclick='finalizarYConfirmarPersonalizacion()'>Finalizar personalización</button>";
+                    }
                 } else {
                     htmlContent = "<p>Esperando a iniciar actividad</p>";
                 }
@@ -95,17 +115,31 @@
 
             setInterval(getArduinoData, 1000); // Actualiza los datos cada segundo
             setInterval(actualizarEstado, 1000); // Actualiza el estado de la actividad cada segundo
+            //setInterval(boton(data),1000);
 
-            function finalizarYConfirmarPersonalizacion() {
-                sendCommand('0'); // Enviar comando para finalizar la actividad
-                setTimeout(function() {
-                    confirmarAccion('finalizarActividad'); // Mostrar mensaje de confirmación después de un corto retraso
-                }, 2000); // Ajusta el tiempo de espera según sea necesario
 
-            }
 
         </script>
         <script src="../js/confirmacion.js"></script>
+        <?php
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $totalPasos = $_POST['totalPasos'];
+                $totalDuracion =$_POST['totalduracion'];
+                
+                // Procesar el dato según sea necesario
+
+                // Enviar dato al Arduino a través del puerto serie (COM4)
+                $puerto_serial = fopen('COM4', 'w');  // Reemplaza 'COM4' con el puerto serie correcto
+                if ($puerto_serial) {
+                    fwrite($puerto_serial, $totalPasos);
+                    fclose($puerto_serial);
+                    echo "Datos de totalPasos enviados correctamente al Arduino.";
+                } else {
+                    echo "Error al abrir el puerto serie.";
+                }
+            }
+        ?>
+</head>
         <body>
 
             <div class="content">

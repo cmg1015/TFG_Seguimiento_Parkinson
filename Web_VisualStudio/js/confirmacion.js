@@ -43,10 +43,14 @@ function confirmarAccion(accion) {
             });
             realizarRedireccion(userType); // Usuario redirigido a su página de inicio
             return;
-        } else if (accion='finalizarPersonalizacion'){
-                        // Los datos se almacenan en la base de datos y después las variables de arduino se resetean
+        }
+    } else if (accion === 'finalizarPersonalizacion'){
+        mensaje = "¿Deseas guardar los datos de la actividad?";
+        console.log('userType:', userType, 'userId:', userId);
+        if (confirm(mensaje)) {
+                    // Los datos se almacenan en la base de datos y después las variables de arduino se resetean
             // Enviar solicitud al servidor para guardar los datos
-            fetch('http://localhost:3000/guardarActividad', {
+            fetch('http://localhost:3000/guardarPersonalizacion', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ userId: userId })
@@ -62,12 +66,9 @@ function confirmarAccion(accion) {
             realizarRedireccion(userType); // Usuario redirigido a su página de inicio
             return;
         }
-        else {
-            // Los datos de todas las variables se resetean y no se guardan en la BD
-            realizarRedireccion(userType); // Usuario redirigido a su página de inicio
-            return;
-        }
-    } else if (accion === "descartarUsuario") {
+    }
+
+    else if (accion === "descartarUsuario") {
         mensaje = "¡Atención! Estás a punto de descartar los cambios";
         urlRedireccion = '../admin/inicioAdmin.php';
 
@@ -106,6 +107,11 @@ function confirmarAccion(accion) {
         } else {
             return;
         }
+    }
+    else {
+        // Los datos de todas las variables se resetean y no se guardan en la BD
+        realizarRedireccion(userType); // Usuario redirigido a su página de inicio
+        return;
     }
 
     if (mensaje && confirm(mensaje)) {

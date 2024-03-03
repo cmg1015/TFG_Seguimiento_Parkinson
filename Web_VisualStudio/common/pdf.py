@@ -43,6 +43,38 @@ if conn.is_connected():
 else:
     print("Conexión fallida.")
 
+sql= "SELECT * FROM usuarios WHERE id_usuario= %s"
+params=(id_paciente,)
+cursor = conn.cursor(dictionary=True)  # Devolver resultados como diccionarios
+
+cursor.execute(sql, params)
+
+datosusuario = cursor.fetchall()
+for row in datosusuario:
+    nombre = row['nombre']
+    apellidos = row['apellidos']
+    correoelectronico= row['correo_electronico']
+    idusuario=row['id_usuario']
+
+sql ="SELECT * FROM pacientes WHERE id_paciente = %s"
+params=(id_paciente,)
+cursor = conn.cursor(dictionary=True)  # Devolver resultados como diccionarios
+
+cursor.execute(sql, params)
+datosusuario1 = cursor.fetchall()
+for row in datosusuario1:
+    sexo=row['sexo']
+
+datos_paciente = {
+    "Nombre": nombre,
+    "Apellidos": apellidos,
+    "Sexo": sexo,
+    "Correo electrónico": correoelectronico,
+    "Id usuario": idusuario
+}
+
+
+
 actividades1 = []
 
 bloqueos=[]
@@ -102,6 +134,7 @@ contenido.append(Spacer(1, 12))
 contenido.append(Paragraph("Datos del Paciente:", normal_style))
 contenido.append(Spacer(1, 6))
 
+
 estilo_tabla = TableStyle([
     ('BACKGROUND', (0, 0), (-1, 0), colors.powderblue),
     ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
@@ -110,7 +143,21 @@ estilo_tabla = TableStyle([
     ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
     ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
     ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ('MAXWIDTH', (0, 0), (-1, -1), 30), 
+    ('COLWIDTH', (0, 0), (-1, -1), 10),  
 ])
+
+encabezados2 = list(datos_paciente.keys())
+valores2 = list(datos_paciente[clave]for clave in encabezados2)
+valores2 = [str(valor) for valor in valores2]
+print (valores2)
+tablapacientesfinal=[encabezados2]+ [valores2]
+tabla2=Table(tablapacientesfinal)
+print(tabla2)
+tabla2.setStyle(estilo_tabla)
+contenido.append(tabla2)
+contenido.append(Spacer(1, 6))
+
 
 if contadorActividades>0:
     mediaBloqueos=round(totalBloqueos/contadorActividades,2)
@@ -151,13 +198,7 @@ contenido.append(Spacer(1, 6))
 # Datos del paciente
 
 
-datos_paciente = [
-    ("Número de Historia:", 1),
-    ("Nombre:", "nombre"),
-    ("Apellidos:", "apellido"),
-    ("Sexo:", "sexo"),
-    ("Fecha de Nacimiento:", "fecha_nacimiento")
-]
+
 
 
 doc.build(contenido)

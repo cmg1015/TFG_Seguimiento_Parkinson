@@ -149,6 +149,7 @@ if (isset($_GET['id_paciente'])) {
         <div class="botones-actividades">
             <button type="button" onclick="location.href='inicioProfesional.php'">Menú Pacientes</button>
             <button type="button" onclick="iniciarActividadYRedirigir()">Realizar Actividad</button>
+            <button type="button" onclick = "location.href='../profesional/personalizarbloqueo.php'">Personalización tiempo de bloqueo</button>
             <button type="button" onclick="location.href='../common/consultaActividades.php?id_paciente=<?php echo $id_paciente; ?>'">Actividades y Estadísticas</button>
         </div>
     </div>
