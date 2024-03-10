@@ -54,6 +54,8 @@
             });
         }
 
+
+
         function getArduinoData() {
             fetch('http://localhost:3000/datos')
                 .then(response => response.json())

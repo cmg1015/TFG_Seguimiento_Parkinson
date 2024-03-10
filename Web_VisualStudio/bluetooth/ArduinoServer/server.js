@@ -39,6 +39,7 @@ let velocidadMedia = 0;
 let estadoActividad = 'esperando'; // Estado inicial de la actividad
 let commandToSend = "";
 let izquierdaFlag = false; // Manejar bloqueos "IZQUIERDA"
+let dataToSend="";
 
 
 // Ruta para recibir comandos
@@ -54,6 +55,33 @@ app.get('/command', (req, res) => {
     res.json({ command: commandToSend, estadoActividad: estadoActividad});
     //commandToSend = ""; // Opcional: resetear el comando después de enviarlo
 });
+
+app.post('/data', (req, res) => {
+    if (req.body.databloqueo){
+        dataToSend = req.body.databloqueo
+    }
+    else{
+        dataToSend=1
+    }
+    console.log(`Dato de bloqueo recibido: ${dataToSend}`); // Verifica que se recibe el comando
+    res.status(200).send(`Dato de bloqueo ${dataToSend} recibido`);
+});
+// Ruta para enviar comandos
+app.get('/data', (req, res) => {
+    res.json({ data: dataToSend});
+    //commandToSend = ""; // Opcional: resetear el comando después de enviarlo
+});
+
+// Nuevo endpoint para confirmar la recepción del comando
+app.post('/confirmData', (req, res) => {
+    if (req.body.received) {
+        dataToSend = ""; // Resetea el comando solo después de la confirmación
+        res.status(200).send('Comando confirmado y reseteado');
+    } else {
+        res.status(400).send('Confirmación no recibida');
+    }
+});
+
 
 // Nuevo endpoint para confirmar la recepción del comando
 app.post('/confirmCommand', (req, res) => {
@@ -156,8 +184,25 @@ app.post('/guardarPersonalizacion', (req, res) => {
             res.status(500).send('Error al guardar datos de actividad');
             return;
         }
+         // Enviar el nuevo dato al Arduino a través del puerto serie
+         const port = new SerialPort('COM3', { baudRate: 9600 });
+         const parser = port.pipe(new Readline({ delimiter: '\r\n' }));
+ 
+         // Esperar a que el puerto serie esté abierto
+         port.on('open', () => {
+             // Enviar el nuevo dato al Arduino
+             port.write(nuevoDato.toString());
+             console.log('Dato enviado al Arduino:', nuevoDato);
+ 
+             // Cerrar el puerto serie después de enviar el dato
+             port.close();
+         });
+         if(port.on('closed')){
+            console.log('arduino cerrado');
+         }
+ 
+         res.send('Datos de actividad guardados correctamente');
 
-        res.send('Datos de actividad guardados correctamente');
     });
 });
 

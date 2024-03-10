@@ -4,13 +4,18 @@ import math
 import serial
 
 # Configura el puerto serie
-ser = serial.Serial('COM4', 9600)  # Ajusta el puerto COM y el baudrate
+ser = serial.Serial('COM3', 9600)  # Ajusta el puerto COM y el baudrate
 
 def send_command_to_arduino(command):
     """Envía un comando al Arduino."""
     print(f"Enviando a Arduino: {command}")  # Imprime el dato a enviar
     command_saltoLinea = command + '\n'
     ser.write(command_saltoLinea.encode())
+
+def send_data_to_arduino(data):
+    print(f"Enviando a Arduino el dato: {data}")
+    data_saltolinea =data +'\n'
+    ser.write(data_saltolinea.encode())
     
 def confirm_command_to_server():
     """Envía una confirmación de recepción del comando al servidor."""
@@ -22,6 +27,8 @@ def confirm_command_to_server():
             print("Error al confirmar el comando")
     except requests.exceptions.RequestException as e:
         print(f"Error al conectar con el servidor para confirmar el comando: {e}")
+
+
     
 def send_data_to_server(endpoint, data):
     """Envía datos al servidor."""
@@ -31,6 +38,17 @@ def send_data_to_server(endpoint, data):
             print(f"Enviado a {url}: {data}")
     except requests.exceptions.RequestException as e:
         print(f"Error al enviar a {url}: {e}")
+
+def confirm_data_to_server():
+    """Envía una confirmación de recepción del dato al servidor."""
+    try:
+        response = requests.post('http://localhost:3000/confirmData', json={'received': True})
+        if response.status_code == 200:
+            print("Dato confirmado y reseteado en el servidor")
+        else:
+            print("Error al confirmar el dato")
+    except requests.exceptions.RequestException as e:
+        print(f"Error al conectar con el servidor para confirmar el dato: {e}")
 
 while True:
     # Recibe datos de Arduino y los envía al servidor
@@ -70,7 +88,24 @@ while True:
                     print("No hay comando para enviar al Arduino")
             else:
                 print(f"Error al solicitar comando: Estado {response.status_code}")
+
     except requests.exceptions.RequestException as e:
         print(f"Error al conectar con el servidor: {e}")
+
+    try:
+        with requests.get('http://localhost:3000/data') as response:
+            if response.status_code == 200:
+                data = response.json()['data']
+                if data:
+                    print(f"Comando recibido del servidor: {data}")
+                    send_data_to_arduino(data)
+                    confirm_data_to_server() 
+                else:
+                    print("No hay dato para enviar al Arduino")
+            else:
+                print(f"Error al solicitar dato: Estado {response.status_code}")    
+    except requests.exceptions.RequestException as e:
+        print(f"Error al conectar con el servidor: {e}")
+    
         
     time.sleep(0.1)  # Pausa de 0.1 segundos tras cada iteración para no sobrecargar el puerto

@@ -1,3 +1,9 @@
+<?php 
+// Establecer una cookie para el ID del paciente antes de cualquier salida HTML
+if (isset($_GET['id_paciente'])) {
+    setcookie('id_paciente', $_GET['id_paciente'], time() + 86400, "/"); // La cookie expira en 1 día
+}
+?>
 <!DOCTYPE html>
 <html lang="es" dir="ltr" xml:lang="es" xmlns="http://www.w3.org/1999/xhtml" class="responsive">
 <head>
@@ -8,6 +14,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <?php
+    
         // Verifica si la sesión ya está iniciada
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -17,7 +24,7 @@
             $userId = $_SESSION['user_id'];
         } elseif ($_SESSION['user_type'] == 'profesional') {
             // Obtener el ID del paciente desde la cookie
-            $userId = isset($_COOKIE['id_paciente']) ? $_COOKIE['id_paciente'] : 0;
+            $userId = isset($_GET['id_paciente']) ? $_GET['id_paciente'] : '';
         }
         echo "<script type='text/javascript'>\n";
         echo "var userType = '" . $_SESSION['user_type'] . "';\n";
@@ -53,6 +60,18 @@
                 });
             }
 
+            function sendDato(datobloqueo) {
+                fetch('http://localhost:3000/data', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json',},
+                    body: JSON.stringify({ datobloqueo: datobloqueo }),
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // Confirmación de envío del comando
+                });
+            }
+
             function getArduinoData() {
                 fetch('http://localhost:3000/datos')
                     .then(response => response.json())
@@ -61,24 +80,16 @@
                     });
             } 
             function finalizarYConfirmarPersonalizacion() {
+                try {
+                    sendDato(((data.actividadMin * 60) / data.Ptotal) * 2);
+                    
+                    setTimeout(function() {
+                        confirmarAccion('finalizarPersonalizacion'); // Mostrar mensaje de confirmación después de un corto retraso
+                    }, 2000);
+                } catch (error) {
+                    console.error("Error:", error);
+                }
                 sendCommand('0'); // Enviar comando para finalizar la actividad
-                const form = new FormData();
-                form.append('totalPasos', data.Ptotal);
-                form.append('totalduracion',data.actividadMin)
-
-                // Enviar el formulario al servidor PHP
-                fetch('http://localhost:3000/personalizarbloqueo.php', {
-                    method: 'POST',
-                    body: form,
-                })
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data); // Confirmación de envío del formulario
-                });
-
-                setTimeout(function() {
-                    confirmarAccion('finalizarPersonalizacion'); // MoPstrar mensaje de confirmación después de un corto retraso
-                }, 2000); // Ajusta el tiempo de espera según sea necesario
 
             }
             function actualizarDatosRecuadro(data) {
@@ -120,16 +131,18 @@
 
 
         </script>
-        <script src="../js/confirmacion.js"></script>
+        <script src="../js/confirmacion.js" onerror="alert('Error al cargar confirmacion.js');"></script>
         <?php
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Verificar la existencia de los datos necesarios en la solicitud POST
+            if (isset($_POST['totalPasos'], $_POST['totalduracion'])) {
                 $totalPasos = $_POST['totalPasos'];
-                $totalDuracion =$_POST['totalduracion'];
-                
-                // Procesar el dato según sea necesario
+                $totalDuracion = $_POST['totalduracion'];
 
-                // Enviar dato al Arduino a través del puerto serie (COM4)
-                $puerto_serial = fopen('COM4', 'w');  // Reemplaza 'COM4' con el puerto serie correcto
+                // Procesar los datos según sea necesario
+
+                // Ejemplo de enviar datos al Arduino
+                $puerto_serial = fopen('COM3', 'w');
                 if ($puerto_serial) {
                     fwrite($puerto_serial, $totalPasos);
                     fclose($puerto_serial);
@@ -137,8 +150,12 @@
                 } else {
                     echo "Error al abrir el puerto serie.";
                 }
+            } else {
+                // Datos POST faltantes, manejar el error aquí
+                echo "Error: Datos POST faltantes.";
             }
-        ?>
+        }
+    ?>
 </head>
         <body>
 
@@ -149,6 +166,7 @@
                     </div>
                 </div>
                 <?php
+                $id_paciente = isset($_GET['id_paciente']) ? $_GET['id_paciente'] : '';
                 if ($_SESSION['user_type'] == 'paciente') {
                     echo '<button type="submit" onclick="location.href=\'../paciente/inicioPaciente.php\'">Menú Principal</button>';
                 } elseif ($_SESSION['user_type'] == 'profesional') {
