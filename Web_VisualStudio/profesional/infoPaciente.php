@@ -151,6 +151,7 @@ if (isset($_GET['id_paciente'])) {
             <button type="button" onclick="iniciarActividadYRedirigir()">Realizar Actividad</button>
             <button type="button" onclick = "location.href='../profesional/personalizarbloqueo.php?id_paciente=<?php echo $_COOKIE['id_paciente']; ?>'">Personalización</button>
             <button type="button" onclick="location.href='../common/consultaActividades.php?id_paciente=<?php echo $id_paciente; ?>'">Actividades y Estadísticas</button>
+            <button type="button" onclick="location.href='../profesional/calibrar.php'">Calibrar dispositivo </button>
         </div>
     </div>
 

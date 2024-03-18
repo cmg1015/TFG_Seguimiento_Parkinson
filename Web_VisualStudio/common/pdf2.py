@@ -202,12 +202,28 @@ contenido.append(Spacer(1, 6))
 
 contenido.append(Spacer(1, 6))
 # Datos del paciente
-imagen = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica.png', width=450, height=300)
-contenido.append(imagen)
-imagen1 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica1.png', width=450, height=300)
-contenido.append(imagen1)
-imagen2 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica2.png', width=450, height=300)
-contenido.append(imagen2)
+if contadorActividades<=30:
+    imagen = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica.png', width=450, height=300)
+    contenido.append(imagen)
+    imagen1 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica1.png', width=450, height=300)
+    contenido.append(imagen1)
+    imagen2 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica2.png', width=450, height=300)
+    contenido.append(imagen2)
+elif contadorActividades<=50:
+    imagen = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica.png', width=550, height=300)
+    contenido.append(imagen)
+    imagen1 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica1.png', width=550, height=300)
+    contenido.append(imagen1)
+    imagen2 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica2.png', width=550, height=300)
+    contenido.append(imagen2)
+else:
+    imagen = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica.png', width=600, height=300)
+    contenido.append(imagen)
+    imagen1 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica1.png', width=600, height=300)
+    contenido.append(imagen1)
+    imagen2 = Image('/xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafica2.png', width=600, height=300)
+    contenido.append(imagen2)
+
 
 
 doc.build(contenido)

@@ -60,11 +60,66 @@
             transition: background-color 0.3s ease;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: sticky;
         }
 
         button[type="submit"]:hover {
             background-color: #D2B4DE;
         }
+        /* Estilos para el desplegable */
+        .dropbtn {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #79c3f5;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown {
+            position: flex;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            margin: 10px;
+            padding: 10px 20px;
+            border: 1px lightgray;
+            background-color: #B1E4F7;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #CDE7F1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #D2B4DE;
+        }
+
     </style>
 </head>
 <body>
@@ -201,11 +256,21 @@
 
  
                 } elseif ($_SESSION['user_type'] == 'profesional') {
+                    echo '<div class="botones">';
                     echo '<button type="submit" onclick="location.href=\'../profesional/inicioProfesional.php\'">Volver a Inicio</button>';
                     // Asegúrate de tener el id_paciente para redirigir correctamente
                     if (isset($_GET['id_paciente'])) {
                         $id_paciente = $_GET['id_paciente'];
                         echo '<button type="submit" onclick="location.href=\'../profesional/infoPaciente.php?id_paciente=' . $id_paciente . '\'">Información del Paciente</button>';
+                        echo '<button type="submit" onclick="location.href=\'../common/graficas.php\'">Ver gráficas</button>';
+                        echo '<div class="dropdown">';
+                        echo '<button class="dropbtn" onclick="toggleOpciones()">Generar Informe</button>';
+                        echo '<div id="opciones" class="dropdown-content" style="display: none;">';
+                        echo '<a href="#" onclick="redirigir(\'../common/pdf2.php\'), cerrarOpciones()">Con Gráfica</a>';
+                        echo '<a href="#" onclick="redirigir(\'../common/pdf.php\'), cerrarOpciones()">Sin Gráfica</a>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
                     }
                 }
             }
@@ -216,32 +281,21 @@
             ?>
 
         </div>
-        <div id="opciones">
-                      <div class="opcion">
-                        <label>
-                          <input type="radio" name="opcion" value="conGrafica" onclick="redirigir('../common/pdf2.php'), cerrarOpciones()"> Con Gráfica
-                        </label>
-                      </div>
-                      <div class="opcion">
-                        <label>
-                          <input type="radio" name="opcion" value="sinGrafica" onclick="redirigir('../common/pdf.php'),cerrarOpciones()"> Sin Gráfica
-                        </label>
-                      </div>
-                    </div>
-
-         </div>
          <script>
-            function mostrarOpciones() {
-                var opciones = document.getElementById('opciones');
-                opciones.style.display = 'block'
+            function toggleOpciones() {
+                var opciones = document.getElementById("opciones");
+                if (opciones.style.display === "none") {
+                    opciones.style.display = "block";
+                } else {
+                    opciones.style.display = "none";
+                }
             }
-            function cerrarOpciones(){
-                var opciones = document.getElementById('opciones');
-                opciones.style.display = 'none'
+            function cerrarOpciones() {
+                document.getElementById('opciones').style.display = 'none';
             }
 
-            function redirigir(archivo) {
-                window.location.href = archivo;
+            function redirigir(url) {
+                window.location.href = url;
             }
         </script>
 </body>

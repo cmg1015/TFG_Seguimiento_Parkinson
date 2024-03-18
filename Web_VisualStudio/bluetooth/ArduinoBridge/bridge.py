@@ -14,8 +14,10 @@ def send_command_to_arduino(command):
 
 def send_data_to_arduino(data):
     print(f"Enviando a Arduino el dato: {data}")
-    data_saltolinea =data +'\n'
-    ser.write(data_saltolinea.encode())
+    data_str=str(data)
+    print(type(data))
+    print(type(data_str))
+    ser.write(data_str.encode())
     
 def confirm_command_to_server():
     """Envía una confirmación de recepción del comando al servidor."""
@@ -80,6 +82,7 @@ while True:
         with requests.get('http://localhost:3000/command') as response:
             if response.status_code == 200:
                 data = response.json()['command']
+                print(response.json())
                 if data:
                     print(f"Comando recibido del servidor: {data}")
                     send_command_to_arduino(data)
@@ -95,6 +98,7 @@ while True:
     try:
         with requests.get('http://localhost:3000/data') as response:
             if response.status_code == 200:
+                print(response.json()['data'])
                 data = response.json()['data']
                 if data:
                     print(f"Comando recibido del servidor: {data}")
@@ -103,7 +107,7 @@ while True:
                 else:
                     print("No hay dato para enviar al Arduino")
             else:
-                print(f"Error al solicitar dato: Estado {response.status_code}")    
+                print(f"Error al solicitar dato: Estado {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"Error al conectar con el servidor: {e}")
     

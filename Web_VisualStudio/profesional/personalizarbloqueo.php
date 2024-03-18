@@ -24,7 +24,7 @@ if (isset($_GET['id_paciente'])) {
             $userId = $_SESSION['user_id'];
         } elseif ($_SESSION['user_type'] == 'profesional') {
             // Obtener el ID del paciente desde la cookie
-            $userId = isset($_GET['id_paciente']) ? $_GET['id_paciente'] : '';
+            $userId = isset($_GET['id_paciente']) ? $_GET['id_paciente'] : 0;
         }
         echo "<script type='text/javascript'>\n";
         echo "var userType = '" . $_SESSION['user_type'] . "';\n";
@@ -35,6 +35,10 @@ if (isset($_GET['id_paciente'])) {
 
     <script>
             let estadoActividad = 'esperando'; // Almacena el estado de la actividad (si se está realizando o no)
+            function quitarbloqueo(){
+                databloqueo=200;
+                sendDato(databloqueo);
+            }
 
             function actualizarEstado() {
                 fetch('http://localhost:3000/actividad')
@@ -60,11 +64,11 @@ if (isset($_GET['id_paciente'])) {
                 });
             }
 
-            function sendDato(datobloqueo) {
+            function sendDato(databloqueo) {
                 fetch('http://localhost:3000/data', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json',},
-                    body: JSON.stringify({ datobloqueo: datobloqueo }),
+                    body: JSON.stringify({ databloqueo: databloqueo }),
                 })
                 .then(response => response.text())
                 .then(data => {
@@ -79,22 +83,63 @@ if (isset($_GET['id_paciente'])) {
                         actualizarDatosRecuadro(data);
                     });
             } 
-            function finalizarYConfirmarPersonalizacion() {
+            function finalizar(){
+                fetch('http://localhost:3000/datos')
+                    .then(response => response.json())
+                    .then(data => {
+                        finalizarYConfirmarPersonalizacion(data);
+                    });
+            }
+            function finalizarYConfirmarPersonalizacion(data) {
                 try {
-                    sendDato(((data.actividadMin * 60) / data.Ptotal) * 2);
-                    
-                    setTimeout(function() {
-                        confirmarAccion('finalizarPersonalizacion'); // Mostrar mensaje de confirmación después de un corto retraso
-                    }, 2000);
+                    dato = ((data.actividadMin * 60) / data.Ptotal) * 2;
+                    if (dato<=2.5){
+                        if (dato<=1.5){
+                            databloqueo=100;
+                            datoreal=1;
+                        }else{
+                            databloqueo=21;
+                            datoreal=2;
+                        }
+                    }else if (dato<20){
+                        databloqueo=Math.round(dato);
+                        datoreal=Math.round(dato);
+                    }else{
+                        databloqueo=20;
+                        datoreal=20;
+                    }
+
+                    //let databloqueo = (dato <= 5) ? '2' : '1';
+                    //let htmlContent = `<p>Datobloqueo: ${databloqueo} </p>`;
+
+                    sendDato(databloqueo);
+
+
                 } catch (error) {
                     console.error("Error:", error);
                 }
+                setTimeout(function() {
+                    confirmarAccion('finalizarPersonalizacion'); // Mostrar mensaje de confirmación después de un corto retraso
+                }, 2000);
+
                 sendCommand('0'); // Enviar comando para finalizar la actividad
+
 
             }
             function actualizarDatosRecuadro(data) {
                 let htmlContent = "";
-
+                dato = (((data.actividadMin * 60) / data.Ptotal) * 2);
+                if (dato<=2.5){
+                        if (dato<=1.5){
+                            datoreal=1;
+                        }else{
+                            datoreal=2;
+                        }
+                }else if (dato<20){
+                        datoreal=Math.round(dato);
+                }else{
+                        datoreal=20;
+                }
                 if (data.izquierda) {
                     // Mostrar mensaje parpadeante
                     htmlContent = "<p class='parpadeante'>IZQUIERDA</p>";
@@ -105,7 +150,7 @@ if (isset($_GET['id_paciente'])) {
                         <p>Tiempo: ${data.tiempo}</p>
                         <p>Velocidad: ${data.velocidad}</p>`;
                         if (data.contP > 10) {
-                        htmlContent += "<button onclick='finalizarYConfirmarPersonalizacion()'>Finalizar personalización</button>";
+                        htmlContent += `<button onclick="finalizar()">Finalizar personalización</button>`;
                     }
                 } else if (estadoActividad === 'finalizada') {
                     // Mostrar datos al finalizar la actividad
@@ -114,9 +159,10 @@ if (isset($_GET['id_paciente'])) {
                         `<p>Bloqueos: ${data.bloqueos}</p>
                         <p>Total de Pasos: ${data.Ptotal}</p>
                         <p>Actividad (min): ${data.actividadMin}</p>
-                        <p>Velocidad Media: ${data.velocidadMedia}</p>`;
+                        <p>Velocidad Media: ${data.velocidadMedia}</p>
+                        <p>El nuevo tiempo de bloqueo será: ${datoreal} segundos</p> `;
                         if (data.Ptotal> 10) {
-                        htmlContent += "<button onclick='finalizarYConfirmarPersonalizacion()'>Finalizar personalización</button>";
+                        htmlContent += `<button onclick="finalizar()">Finalizar personalización</button>`;
                     }
                 } else {
                     htmlContent = "<p>Esperando a iniciar actividad</p>";
@@ -132,30 +178,66 @@ if (isset($_GET['id_paciente'])) {
 
         </script>
         <script src="../js/confirmacion.js" onerror="alert('Error al cargar confirmacion.js');"></script>
-        <?php
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Verificar la existencia de los datos necesarios en la solicitud POST
-            if (isset($_POST['totalPasos'], $_POST['totalduracion'])) {
-                $totalPasos = $_POST['totalPasos'];
-                $totalDuracion = $_POST['totalduracion'];
-
-                // Procesar los datos según sea necesario
-
-                // Ejemplo de enviar datos al Arduino
-                $puerto_serial = fopen('COM3', 'w');
-                if ($puerto_serial) {
-                    fwrite($puerto_serial, $totalPasos);
-                    fclose($puerto_serial);
-                    echo "Datos de totalPasos enviados correctamente al Arduino.";
-                } else {
-                    echo "Error al abrir el puerto serie.";
-                }
-            } else {
-                // Datos POST faltantes, manejar el error aquí
-                echo "Error: Datos POST faltantes.";
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                background: linear-gradient(135deg, rgba(174, 214, 241, 0.3), rgba(250, 219, 216, 0.3), rgba(245, 183, 177, 0.3), rgba(210, 180, 222, 0.3));
+                background-blend-mode: overlay;
+                font-family: Arial, sans-serif;
             }
-        }
-    ?>
+
+            .content {
+                text-align: center;
+                position: absolute;
+                width: 100%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .welcome-message {
+                color: #333;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            button[type="submit"]  {
+                margin: 10px;
+                padding: 10px 20px;
+                border: none;
+                background-color: #79c3f5;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            button[type="submit"]:hover {
+                background-color: #D2B4DE;
+            }
+
+            .info-actividad {
+                background-color: #fff;
+                padding: 20px;
+                margin: 20px auto; /* Centra el recuadro */
+                max-width: 400px; /* Ancho máximo */
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center; /* Centra el texto */
+            }
+
+            .parpadeante {
+                animation: parpadeo 1s infinite;
+            }
+
+            @keyframes parpadeo {  
+                50% { opacity: 0; }
+            }
+
+        </style>
+
 </head>
         <body>
 
@@ -173,7 +255,7 @@ if (isset($_GET['id_paciente'])) {
                     echo '<button type="submit" onclick="location.href=\'../profesional/inicioProfesional.php\'">Menú Pacientes</button>';
                 }
                 ?>
-                <button type="submit" onclick="sendCommand('1')">Iniciar Actividad</button>
+                <button type="submit" onclick="sendCommand('1');quitarbloqueo()">Iniciar Actividad</button>
             </div>
 
         </body>

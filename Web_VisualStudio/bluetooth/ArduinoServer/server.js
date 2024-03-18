@@ -57,12 +57,7 @@ app.get('/command', (req, res) => {
 });
 
 app.post('/data', (req, res) => {
-    if (req.body.databloqueo){
-        dataToSend = req.body.databloqueo
-    }
-    else{
-        dataToSend=1
-    }
+    dataToSend = req.body.databloqueo;
     console.log(`Dato de bloqueo recibido: ${dataToSend}`); // Verifica que se recibe el comando
     res.status(200).send(`Dato de bloqueo ${dataToSend} recibido`);
 });
@@ -91,6 +86,7 @@ app.post('/confirmCommand', (req, res) => {
     } else {
         res.status(400).send('Confirmación no recibida');
     }
+
 });
 
 // Rutas para recibir cada tipo de dato
@@ -173,7 +169,7 @@ app.post('/guardarPersonalizacion', (req, res) => {
     const idPaciente = req.body.userId;
 
     const query = `
-        INSERT INTO personalizacion
+        INSERT INTO personalizacion 
         (id_paciente, numero_bloqueos, velocidad_media, numero_pasos, duracion) 
         VALUES (?, ?, ?, ?, ?)
     `;
@@ -184,25 +180,7 @@ app.post('/guardarPersonalizacion', (req, res) => {
             res.status(500).send('Error al guardar datos de actividad');
             return;
         }
-         // Enviar el nuevo dato al Arduino a través del puerto serie
-         const port = new SerialPort('COM3', { baudRate: 9600 });
-         const parser = port.pipe(new Readline({ delimiter: '\r\n' }));
- 
-         // Esperar a que el puerto serie esté abierto
-         port.on('open', () => {
-             // Enviar el nuevo dato al Arduino
-             port.write(nuevoDato.toString());
-             console.log('Dato enviado al Arduino:', nuevoDato);
- 
-             // Cerrar el puerto serie después de enviar el dato
-             port.close();
-         });
-         if(port.on('closed')){
-            console.log('arduino cerrado');
-         }
- 
-         res.send('Datos de actividad guardados correctamente');
-
+        res.send('Datos de actividad guardados correctamente');
     });
 });
 

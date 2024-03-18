@@ -88,8 +88,15 @@ for row in resultados:
     else:
         bloqueosporpasos.append(0)
 print("actividades 2", actividades1,nactividades,bloqueos)
-plt.plot(nactividades, bloqueos, color='blue', linestyle='-')
 
+if nactividades<=50:
+    fig_width = len(nactividades) / 3
+else:
+    fig_width = len(nactividades) /4  # Ajusta este valor según tus preferencias
+
+# Crear la primera gráfica
+plt.figure(figsize=(fig_width, 6)) 
+plt.plot(nactividades, bloqueos, color='blue', linestyle='-')
 # Etiquetas y título
 plt.xlabel('Id de actividad')
 plt.ylabel('Número de Bloqueos')
