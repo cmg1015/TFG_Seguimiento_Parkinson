@@ -38,6 +38,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#" onclick="confirmarAccion('cerrarSesion')">Cerrar sesión</a>
                         </li>
+                        <?php
+                            $fecha_actual = date("d-m-Y");
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../paciente/diario.php?fecha_actual=<?php echo $fecha_actual; ?>">Acceder al diario</a></li>
+                        </li>
                     </ul>
                 </div>
             </div>

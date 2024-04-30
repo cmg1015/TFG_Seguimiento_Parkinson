@@ -38,6 +38,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#" onclick="confirmarAccion('cerrarSesion')">Cerrar sesión</a>
                         </li>
+                        
                     </ul>
                 </div>
             </div>
