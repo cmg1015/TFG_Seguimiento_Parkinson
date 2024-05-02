@@ -42,7 +42,7 @@
                             $fecha_actual = date("d-m-Y");
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="../paciente/diario.php?fecha_actual=<?php echo $fecha_actual; ?>">Acceder al diario</a></li>
+                            <a class="nav-link" href="../paciente/diario2.php?fecha_actual=<?php echo $fecha_actual; ?>">Acceder al diario</a></li>
                         </li>
                     </ul>
                 </div>

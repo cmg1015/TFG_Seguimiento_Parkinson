@@ -133,7 +133,7 @@ if (isset($_GET['fecha_actual'])) {
 
     <h2>Diario del día <?php echo $fecha ?></h2>
     <form action="#" method="post" id="med_form">
-        <fieldset class="medicacion">
+        <fieldset class="medicacion" >
             <legend>Medicación</legend>
             <div id="medicacion">
             <div>
@@ -152,42 +152,42 @@ if (isset($_GET['fecha_actual'])) {
                     <!-- Opciones de franjas horarias -->
                 </select>
             </div>
+        <div id="2botones">
         <div id="botones">
-            <button type="button" onclick="agregarToma()">Añadir Toma</button>
+            <button type="button" onclick="agregarToma(this.parentNode.parentNode)">Añadir Toma</button>
         </div>
         </div>
         <button type="button" onclick="agregarMedicacion()">Añadir Medicación</button>
-
+        </div>
         </fieldset>
+        </form>
         <button type="submit">Guardar</button>
-    </form>
+
 
     <script>
         let contadorMedicaciones =1;
         function agregarMedicacion() {
+            contadorMedicaciones++;
+            const MedLabel = document.createElement('label');
+            MedLabel.textContent = 'Medicación ' + contadorMedicaciones + ': ';
             // Clonar el conjunto de campos de medicación
             const medicacionDiv = document.querySelector('#medicacion').cloneNode(true);
-
             // Crear un botón "Agregar Toma"
-            const botonAgregarToma = document.createElement('button');
-            botonAgregarToma.textContent = 'Agregar Toma';
-            botonAgregarToma.type = 'button';
-            botonAgregarToma.addEventListener('click', agregarToma);
 
-            // Adjuntar el botón al conjunto de campos clonados
-            medicacionDiv.appendChild(botonAgregarToma);
 
             // Obtener el formulario actual
             const formulario = document.getElementById('med_form');
 
             // Agregar los campos clonados al formulario
-            formulario.appendChild(medicacionDiv1);
-            contador
+            formulario.appendChild(document.createElement('br'));
+            formulario.appendChild(MedLabel);
+            formulario.appendChild(document.createElement('br'));
+            formulario.appendChild(medicacionDiv);
+
         }
 
         let contadorTomas = 1;
-
-        function agregarToma() {
+        function agregarToma(medicacionDiv) {
             const MedLabel = document.createElement('label');
             MedLabel.textContent = 'Toma de medicación adicional ' + contadorTomas + ': ';
             // Crear una nueva etiqueta <label> para el campo de toma de medicación
@@ -206,7 +206,6 @@ if (isset($_GET['fecha_actual'])) {
             const lineBreak = document.createElement('br');
 
             // Agregar las etiquetas, los campos clonados y el salto de línea al formulario
-            const medicacionDiv = document.querySelector('.medicacion');
             medicacionDiv.appendChild(document.createElement('br'));
             medicacionDiv.appendChild(MedLabel);
             medicacionDiv.appendChild(document.createElement('br'));
@@ -220,6 +219,7 @@ if (isset($_GET['fecha_actual'])) {
             // Incrementar el contador de tomas
             contadorTomas++;
         }
+
 
 
         // Generar opciones de franjas horarias
