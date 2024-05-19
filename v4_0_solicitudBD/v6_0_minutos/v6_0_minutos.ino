@@ -9,6 +9,8 @@
 #include <LiquidCrystal_I2C.h>
 #include <SoftwareSerial.h>
 #include <RTClib.h>//nuevo
+#include <Time.h>
+#include <TimeLib.h>
 // El MPU6050 presenta por defecto una direccion de 0x68
 MPU6050 mpu;
 RTC_DS3231 rtc; //nuevo
@@ -159,7 +161,14 @@ void finalizarActividad(){
     }
     
     // Tiempo total de actividad
-    actividadMin = tiempo_actividad/60.;
+    int min= tiempo_actividad/60;
+    int seg= (tiempo_actividad - min*60)/100;
+    actividadMin = min+seg;
+    //actividadMin = tiempo_actividad/60.;
+    //unsigned int minutos = tiempo_actividad / 60;
+    //unsigned int segundos = tiempo_actividad % 60;
+    //String actividadMin = String(minutos) + ":" + (segundos < 10 ? "0" : "") + String(segundos);
+  
     lcd.setCursor(0, 1); 
     lcd.print(actividadMin);
     lcd.setCursor(4, 1);  
@@ -194,7 +203,6 @@ void finalizarActividad(){
 //////////////////////////////////////////////////////////    PROGRAMA       ///////////////////////////////////////////////////////////
 
 void setup(){
-  
   pinMode(8,INPUT); //BOTON1
   pinMode(7,INPUT); //BOTON2
   pinMode(1,OUTPUT); //Nuevo, láser
@@ -222,7 +230,28 @@ void setup(){
 ////////////////////////////////////////////////////////// PROGRAMA PRINCIPAL ///////////////////////////////////////////////////////////
 
 void loop(){
-  
+
+//----------------------------------------
+
+
+
+    btSerial.print("mala: ");
+    btSerial.print(inicio.year());
+    btSerial.print("/");
+    btSerial.print(inicio.month());
+    btSerial.print("/");
+    btSerial.print(inicio.day());
+    btSerial.print(" ");
+    btSerial.print(inicio.hour());
+    btSerial.print(":minuto");
+    btSerial.print(inicio.minute());
+    btSerial.print(":segundo");
+    btSerial.print(inicio.second());
+    btSerial.println();
+    inicio = rtc.now();//borrar todo esto hasta el if
+    String hora_fecha_inicio = obtenerHoraFecha(inicio);
+    Serial.println("Inicio de actividad: " + hora_fecha_inicio);
+    
   // Verificar si hay un comando disponible a través de Bluetooth
   if (btSerial.available()) {
     String command = btSerial.readStringUntil('\n'); // Lee la línea completa
@@ -245,6 +274,7 @@ void loop(){
         cte = 0.415f; // si se trata de un hombre
       }
     }
+  
     
     // Control de la actividad
     if ((command == "1") && (estado == 0 || estado == 3)) {
@@ -349,6 +379,26 @@ void loop(){
     if (tiempo > 0 && !isnan(tiempo)&& !isinf(tiempo)) {
         btSerial.print("tiempo:");
         btSerial.println(tiempo);
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
+          if (!rtc.begin()) {
+            Serial.println("¡No se pudo encontrar el módulo RTC!");
+          }
+
+        DateTime inicio = rtc.now();
+        btSerial.println("inicio:");
+        btSerial.print("Inicio: ");
+        btSerial.print(inicio.year());
+        btSerial.print("/");
+        btSerial.print(inicio.month());
+        btSerial.print("/");
+        btSerial.print(inicio.day());
+        btSerial.print(" ");
+        btSerial.print(inicio.hour());
+        btSerial.print(":");
+        btSerial.print(inicio.minute());
+        btSerial.print(":");
+        btSerial.print(inicio.second());
+        btSerial.println();
     }
     
     // FRECUENCIA
