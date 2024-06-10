@@ -144,7 +144,7 @@ void finalizarActividad(){
     lcd.setCursor(10, 0);  
     lcd.print(bloqueos);
     String fechatiempofin= String( registrarFinActividad());//nuevo
-    lcd.print(fechatiempofin);
+    //lcd.print(fechatiempofin);
 
     // Enviar datos por Bluetooth, solo si no son NaN ni Inf
     if (!isnan(bloqueos)&& !isinf(bloqueos)) {
@@ -235,22 +235,6 @@ void loop(){
 
 
 
-    btSerial.print("mala: ");
-    btSerial.print(inicio.year());
-    btSerial.print("/");
-    btSerial.print(inicio.month());
-    btSerial.print("/");
-    btSerial.print(inicio.day());
-    btSerial.print(" ");
-    btSerial.print(inicio.hour());
-    btSerial.print(":minuto");
-    btSerial.print(inicio.minute());
-    btSerial.print(":segundo");
-    btSerial.print(inicio.second());
-    btSerial.println();
-    inicio = rtc.now();//borrar todo esto hasta el if
-    String hora_fecha_inicio = obtenerHoraFecha(inicio);
-    Serial.println("Inicio de actividad: " + hora_fecha_inicio);
     
   // Verificar si hay un comando disponible a través de Bluetooth
   if (btSerial.available()) {
@@ -282,7 +266,7 @@ void loop(){
       String fechatiempoinicio= String(registrarInicioActividad());//nuevo
       tiempo1 = millis() / 1000;
       lcd.clear();
-      lcd.print(fechatiempoinicio);
+      //lcd.print(fechatiempoinicio);
     } else if ((command == "0") && (estado == 1 || estado == 3)) {
       estado = 0; // Finalizar la actividad como si se presionara el botón físico
       lcd.clear();
