@@ -2,19 +2,15 @@
 // Control del MPU6050 mediante la libreria I2C 
 // Libreria MPU6050.h requiere I2Cdev.h
 // Libreria I2Cdev.h requiere Wire.h
-
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include "Wire.h"
 #include <LiquidCrystal_I2C.h>
 #include <SoftwareSerial.h>
-#include <RTClib.h>//nuevo
-#include <Time.h>
-#include <TimeLib.h>
+
+
 // El MPU6050 presenta por defecto una direccion de 0x68
 MPU6050 mpu;
-RTC_DS3231 rtc; //nuevo
-
 // Crear el objeto LCD
 LiquidCrystal_I2C lcd(0x27, 16,2);
 
@@ -56,53 +52,8 @@ float velocidadMedia = 0.0;   // velocidad media
 float frecuencia;       // frecuencia
 float actividadMin;    // tiempo de actividad en minutos
 
-DateTime inicio, fin; //nuevo
 
-////////////////////////////////// FUNCIONES ///////////////////////////////////// 
 
-String obtenerHoraFecha(DateTime timestamp) {//nuevo
-  // Construir la cadena para la hora en formato hh:mm
-  String hora = String(timestamp.hour());
-  if (hora.length() == 1) {
-    hora = "0" + hora; // Agrega un cero adelante si la hora es de un solo dígito
-  }
-  hora += ":";
-
-  String minuto = String(timestamp.minute());
-  if (minuto.length() == 1) {
-    minuto = "0" + minuto; // Agrega un cero adelante si el minuto es de un solo dígito
-  }
-  hora += minuto;
-
-  // Construir la cadena para la fecha en formato dd/mm/yyyy
-  String fecha = String(timestamp.day());
-  fecha += "/";
-
-  String mes = String(timestamp.month());
-  if (mes.length() == 1) {
-    mes = "0" + mes; // Agrega un cero adelante si el mes es de un solo dígito
-  }
-  fecha += mes;
-  fecha += "/";
-  fecha += String(timestamp.year());
-
-  // Devolver la cadena con la fecha y hora formateadas
-  return fecha + " " + hora;
-}
-
-String registrarInicioActividad() {//nuevo
-  inicio = rtc.now();
-  String hora_fecha_inicio = obtenerHoraFecha(inicio);
-  Serial.println("Inicio de actividad: " + hora_fecha_inicio);
-  return hora_fecha_inicio;
-}
-
-String registrarFinActividad() { //nuevo
-  fin = rtc.now();
-  String hora_fecha_fin = obtenerHoraFecha(fin);
-  Serial.println("Fin de actividad: " + hora_fecha_fin);
-  return hora_fecha_fin;
-}
 
 void contarPasos(){
     // Funcion que lee los valores del acelerometro y contabiliza los pasos.
@@ -143,8 +94,6 @@ void finalizarActividad(){
     lcd.print("Bloqueos:");
     lcd.setCursor(10, 0);  
     lcd.print(bloqueos);
-    String fechatiempofin= String( registrarFinActividad());//nuevo
-    //lcd.print(fechatiempofin);
 
     // Enviar datos por Bluetooth, solo si no son NaN ni Inf
     if (!isnan(bloqueos)&& !isinf(bloqueos)) {
@@ -219,11 +168,7 @@ void setup(){
   lcd.print("Presionar START");
   btSerial.println('3');      // Enviar estado al script de Python
 
-  rtc.begin();//nuevo
 
-  if (rtc.lostPower()) {
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); //nuevo Establece la fecha y hora actual
-  }
 }
 
 
@@ -263,7 +208,6 @@ void loop(){
     // Control de la actividad
     if ((command == "1") && (estado == 0 || estado == 3)) {
       estado = 1; // Iniciar la actividad como si se presionara el botón físico
-      String fechatiempoinicio= String(registrarInicioActividad());//nuevo
       tiempo1 = millis() / 1000;
       lcd.clear();
       //lcd.print(fechatiempoinicio);
@@ -318,13 +262,11 @@ void loop(){
   if ((digitalRead(8) == HIGH) && (estado == 0 || estado == 3)){  // botón START presionado y no se está realizando actividad
     estado = 1;                 // cambiar el estado del boton
     btSerial.println('1');      // Enviar estado al script de Python
-    String fechatiempoinicio= String(registrarInicioActividad());//nuevo
     tiempo1 = millis()/1000;    // inicializamos el tiempo
     lcd.clear();                // borrar el contenido del lcd   
   } 
   if ((digitalRead(7) == HIGH) && (estado == 1 || estado == 3)){  // botón STOP presionado y se está realizando actividad
     estado = 0;                 // cambiar el estado del boton
-    registrarFinActividad();
     btSerial.println('0');      // Enviar estado al script de Python
     lcd.clear();                // borrar el contenido del lcd
     finalizarActividad();
@@ -363,26 +305,6 @@ void loop(){
     if (tiempo > 0 && !isnan(tiempo)&& !isinf(tiempo)) {
         btSerial.print("tiempo:");
         btSerial.println(tiempo);
-        rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); 
-          if (!rtc.begin()) {
-            Serial.println("¡No se pudo encontrar el módulo RTC!");
-          }
-
-        DateTime inicio = rtc.now();
-        btSerial.println("inicio:");
-        btSerial.print("Inicio: ");
-        btSerial.print(inicio.year());
-        btSerial.print("/");
-        btSerial.print(inicio.month());
-        btSerial.print("/");
-        btSerial.print(inicio.day());
-        btSerial.print(" ");
-        btSerial.print(inicio.hour());
-        btSerial.print(":");
-        btSerial.print(inicio.minute());
-        btSerial.print(":");
-        btSerial.print(inicio.second());
-        btSerial.println();
     }
     
     // FRECUENCIA
