@@ -154,7 +154,7 @@ void finalizarActividad(){
 void setup(){
   pinMode(8,INPUT); //BOTON1
   pinMode(7,INPUT); //BOTON2
-  pinMode(1,OUTPUT); //Nuevo, láser
+  pinMode(2,OUTPUT); //Nuevo, láser
 
   Serial.begin(9600);     // Iniciar la comunicación Serial con el PC
   btSerial.begin(9600);   // Iniciar la comunicación Serial con el HC-05
@@ -331,7 +331,7 @@ void loop(){
       tiempo += tiempo2 - tiempo1;           // incrementar tiempo 
       tiempo_actividad += tiempo2 - tiempo1; // incrementar tiempo actividad  
       cont = 0;                              // contador a 0 
-      digitalWrite(1,LOW);//nuevo, desactivar laser
+      digitalWrite(2,LOW);//nuevo, desactivar laser
 
       // si la velocidad es menor de 100
       if (velocidad < 100){
@@ -345,7 +345,7 @@ void loop(){
     // Si tarda más de 5 segundos en dar el siguiente paso 
     if (cont_espera >= datobloqueoint){ 
       cont++; // incrementar contador
-      digitalWrite(1,HIGH);//nuevo, activar laser
+      digitalWrite(2,HIGH);//nuevo, activar laser
 
       // la primera vez que detecta el bloqueo
       if (cont == 1){
