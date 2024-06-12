@@ -49,7 +49,7 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $fecha_seleccionada = $_POST['fecha'];
         echo $fecha_seleccionada;
-        exec("python /xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/intentografdiarios.py $fecha_seleccionada");
+        exec("python /xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/grafdiarios.py $fecha_seleccionada");
     }
     ?>
     <img src="graficamed.png" alt="Gráfica de número de bloqueos en cada actividad realizada">
@@ -60,7 +60,7 @@
     <button onclick="toggleGrafica('grafica1')">Mostrar/Esconder Gráfica</button>
     <div id="grafica1" class="grafica-container">
         <?php
-            shell_exec('python /xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/intentograficasmed.py')
+            shell_exec('python /xampp/htdocs/Web_VisualStudio_paraDescargar/Web_VisualStudio/common/graficasmed.py')
         ?>
         <img src="graficamed1.png" alt="Gráfica de número de bloqueos por minuto en cada actividad realizada">
     </div>
