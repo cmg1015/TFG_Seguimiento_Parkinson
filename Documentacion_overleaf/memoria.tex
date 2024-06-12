@@ -1,0 +1,280 @@
+\documentclass[a4paper,12pt,twoside]{memoir}
+
+% Castellano
+\usepackage[spanish,es-tabla]{babel}
+\selectlanguage{spanish}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % Scalable font
+\usepackage{microtype}
+\usepackage{placeins}
+
+\RequirePackage{booktabs}
+\RequirePackage[table]{xcolor}
+\RequirePackage{xtab}
+\RequirePackage{multirow}
+
+% Links
+\PassOptionsToPackage{hyphens}{url}\usepackage[colorlinks]{hyperref}
+\hypersetup{
+	allcolors = {red}
+}
+
+% Ecuaciones
+\usepackage{amsmath}
+
+% Rutas de fichero / paquete
+\newcommand{\ruta}[1]{{\sffamily #1}}
+
+% Párrafos
+\nonzeroparskip
+
+% Huérfanas y viudas
+\widowpenalty100000
+\clubpenalty100000
+
+\let\tmp\oddsidemargin
+\let\oddsidemargin\evensidemargin
+\let\evensidemargin\tmp
+\reversemarginpar
+
+% Imágenes
+% Comando para insertar una imagen en un lugar concreto.
+% Los parámetros son:
+% 1 --> Ruta absoluta/relativa de la figura
+% 2 --> Texto a pie de figura
+% 3 --> Tamaño en tanto por uno relativo al ancho de página
+\usepackage{graphicx}
+
+\usepackage[sorting=none]{biblatex}
+\addbibresource{bibliografia.bib}
+\usepackage{rotating}
+\newcommand{\imagen}[3]{
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=#3\textwidth]{#1}
+		\caption{#2}\label{fig:#1}
+	\end{figure}
+	\FloatBarrier
+}
+
+
+
+
+
+
+
+\graphicspath{ {./img/} }
+
+% Capítulos
+\chapterstyle{bianchi}
+\newcommand{\capitulo}[2]{
+	\setcounter{chapter}{#1}
+	\setcounter{section}{0}
+	\setcounter{figure}{0}
+	\setcounter{table}{0}
+	\chapter*{#2}
+	\addcontentsline{toc}{chapter}{#2}
+	\markboth{#2}{#2}
+}
+
+% Apéndices
+\renewcommand{\appendixname}{Apéndice}
+\renewcommand*\cftappendixname{\appendixname}
+
+\newcommand{\apendice}[1]{
+	%\renewcommand{\thechapter}{A}
+	\chapter{#1}
+}
+
+\renewcommand*\cftappendixname{\appendixname\ }
+
+% Formato de portada
+
+\makeatletter
+\usepackage{xcolor}
+\newcommand{\tutor}[1]{\def\@tutor{#1}}
+
+
+\newcommand{\course}[1]{\def\@course{#1}}
+\definecolor{cpardoBox}{HTML}{E6E6FF}
+\def\maketitle{
+  \null
+  \thispagestyle{empty}
+  % Cabecera ----------------
+\begin{center}
+  \noindent\includegraphics[width=\textwidth]{cabeceraSalud}\vspace{1.5cm}%
+\end{center}
+  
+  % Título proyecto y escudo salud ----------------
+  \begin{center}
+    \begin{minipage}[c][1.5cm][c]{.20\textwidth}
+        \includegraphics[width=\textwidth]{escudoSalud.pdf}
+    \end{minipage}
+  \end{center}
+  
+  \begin{center}
+    \colorbox{cpardoBox}{%
+        \begin{minipage}{.8\textwidth}
+          \vspace{.5cm}\Large
+          \begin{center}
+          \textbf{TFG del Grado en Ingeniería de la Salud}\vspace{.6cm}\\
+          \textbf{\LARGE\@title{}}
+          \end{center}
+          \vspace{.2cm}
+        \end{minipage}
+    }%
+  \end{center}
+  
+    % Datos de alumno, curso y tutores ------------------
+  \begin{center}%
+  {%
+    \noindent\LARGE
+    Presentado por \@author{}\\ 
+    en Universidad de Burgos\\
+    \vspace{0.5cm}
+    \noindent\Large
+    \@date{}\\
+    \vspace{0.5cm}
+    %Tutor: \@tutor{}\\ % comenta el que no corresponda
+    Tutor: \@tutor{}\\
+  }%
+  \end{center}%
+  \null
+  \cleardoublepage
+  }
+\makeatother
+
+\newcommand{\nombre}{Carmen Marcos Gordillo}
+\newcommand{\nombreTutor}{Guirguis Zaki Guirguis Abdelmessih} 
+\newcommand{\dni}{71756805W} 
+
+% Datos de portada
+\title{Solución tecnológica para la monitorización de síntomas motores en pacientes con Párkinson}
+\author{\nombre}
+\tutor{\nombreTutor}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+
+\newpage\null\thispagestyle{empty}\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{empty}
+
+
+\noindent\includegraphics[width=\textwidth]{cabeceraSalud}\vspace{1cm}
+
+\noindent D. \nombreTutor, profesor del departamento de Ingeniería Electromecánica, área de Tecnología electrónica.
+
+\noindent Expone:
+
+\noindent Que el alumno D. \nombre, con DNI \dni, ha realizado el Trabajo final de Grado en Ingeniería de la Salud titulado título del trabajo. 
+
+\noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
+
+\begin{center} %\large
+En Burgos, {\large \today}
+\end{center}
+
+\vfill\vfill\vfill
+
+% Author and supervisor
+\begin{minipage}{0.45\textwidth}
+\begin{flushleft} %\large
+Vº. Bº. del Tutor:\\[2cm]
+D. \nombreTutor
+\end{flushleft}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+
+\end{minipage}
+\hfill
+
+\vfill
+
+% para casos con solo un tutor comentar lo anterior
+% y descomentar lo siguiente
+%Vº. Bº. del Tutor:\\[2cm]
+%D. nombre tutor
+
+
+\newpage\null\thispagestyle{empty}\newpage
+
+
+
+
+\frontmatter
+
+% Abstract en castellano
+\renewcommand*\abstractname{Resumen}
+\begin{abstract}
+La enfermedad de Párkinson representa el trastorno neurodegenerativo del movimiento más común, presentando en Europa una prevalencia de 108-257 casos por cada 100 000 habitantes. Los pacientes de Párkinson presentan frecuentemente como síntoma bloqueos musculares que derivan en congelación de la marcha.
+
+El presente proyecto utiliza como punto de partida el prototipo obtenido en 2 proyectos anteriores \cite{Gonzalez2023} \cite{Martos2024}, los cuales estaban centrados en el desarrollo de una solución tecnológica hardware/software que utiliza componentes Arduino y una aplicación web para la monitorización de este síntoma. 
+
+Se desarrollan diversas funcionalidades relativas a la aplicación web y al script Arduino del sensor: personalización de la detección de congelación de la marcha por parte del sensor, generación de gráficas e informes a partir de las actividades registradas y registro diario de fluctuaciones motoras, cuyos datos se analizan conjuntamente con las actividades para mostrar los efectos de las medicaciones en los síntomas motores del paciente. Esto aporta un feedback al profesional que sirve como ayuda a la hora de evaluar la progresión de la enfermedad y ajustar la pauta de medicaciones según los síntomas del paciente.
+
+Se rediseña también el hardware con el objetivo de aportar al usuario una mayor comodidad y una función de reacción a la detección de congelación de la marcha.
+
+\end{abstract}
+
+\renewcommand*\abstractname{Descriptores}
+\begin{abstract}
+Enfermedad de Párkinson, congelación de la marcha, bloqueo muscular, Arduino, aplicación web, diario de fluctuaciones motoras, informe de actividades, solución tecnológica.
+\end{abstract}
+
+\clearpage
+
+% Abstract en inglés
+\renewcommand*\abstractname{Abstract}
+\begin{abstract}
+Parkinson's disease represents the most common neurodegenerative movement disorder, with a prevalence of 108-257 cases per 100,000 inhabitants in Europe. Parkinson's patients frequently present muscle blockages as a symptom that leads to freezing of gait.
+
+This project uses as a starting point the prototype obtained in 2 previous projects \cite{Gonzalez2023} \cite{Martos2024}, which focused on the development of a hardware/software technological solution that uses Arduino components and a web application to monitor this symptom.
+
+Various functionalities are developed related to the web application and the Arduino script of the sensor: customization of the detection of freezing of gait by the sensor, generation of graphs and reports from the recorded activities and daily recording of motor fluctuations, whose data is analyzed together with the activities to show the effects of the medications on the patient's motor symptoms. This provides feedback to the professional that helps when evaluating the progression of the disease and adjusting the medication regimen according to the patient's symptoms.
+
+The hardware is also redesigned with the aim of providing the user with greater comfort and a reaction function to the detection of freezing of movement.
+\end{abstract}
+
+\renewcommand*\abstractname{Keywords}
+\begin{abstract}
+Parkinson's Disease, freezing of gait, muscle block, Arduino, web application, diary of motor fluctuations, activity report, technological solution.
+\end{abstract}
+
+\clearpage
+
+% Indices
+\tableofcontents
+
+\clearpage
+
+\listoffigures
+
+\clearpage
+
+\listoftables
+\clearpage
+
+
+\mainmatter
+\include{./tex/1_introduccion}
+\include{./tex/2_objetivos}
+\include{./tex/3_teoricos}
+\include{./tex/4_metodologia}
+\include{./tex/5_resultados}
+\include{./tex/6_conclusiones}
+\include{./tex/7_lineas_futuras}
+
+
+\bibliographystyle{apalike}
+
+
+\printbibliography
+\end{document}

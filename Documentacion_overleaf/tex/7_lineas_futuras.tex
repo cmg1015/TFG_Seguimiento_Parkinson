@@ -1,0 +1,15 @@
+\capitulo{7}{Lineas de trabajo futuras}
+
+En este proyecto se concluye la creación de un prototipo hardware/software para la monitorización de párkinson desarrollado a partir de los trabajos \cite{Gonzalez2023} 
+ \cite{Martos2024}, añadiendo funciones como la personalización del tiempo registrado como congelación de la marcha, el registro de un diario de tomas y fluctuaciones, la visualización de gráficas y descarga de informes a partir de las actividades registradas... Se obtuvo un hardware que proporciona más comodidad al usuario y una respuesta en tiempo real a las situaciones de cese de la marcha.\\
+
+Para la mejora de este prototipo se propone una edición del código Arduino que permita utilizar de forma más amplia las funcionalidades del sensor MPU-6050. De esta forma, se podrían detectar movimientos irregulares en la marcha causados por bloqueos de la marcha que no necesariamente desembocan en cese de la marcha (bloqueos parciales/bloqueos transitorios).\\
+
+Teniendo esta capacidad podrían incluso llegar a distinguirse ceses voluntarios e involuntarios de la marcha, ya que los ceses involuntarios presentarán previos movimientos irregulares en la marcha. Esta distinción puede aportar un gran avance en la facilidad de uso del prototipo, pudiendo descartar los botones de start y stop, ya que el programa podría desactivarse de manera automática ante un cese voluntario de la marcha. Esto permitiría registrar actividades de duración más larga, pulsando tan sólo el botón ON-OFF al inicio y fin de las mismas.\\
+
+La precisión de las medidas recogidas por el sensor MPU-6050 podría aumentarse utilizando 2 sensores en la tobillera: de esta forma, en caso de registrar valores similares podría hacerse la media de estos, aportando una mayor fiabilidad o en caso de registrar valores muy distintos podría saltar un indicador de la necesidad de recalibrar ambos sensores.\\
+
+La inclusión de una tarjeta SD en el dispositivo resultaría interesante, permitiendo guardar los datos sin necesidad de que el dispositivo esté conectado mediante bluetooth a un ordenador o teléfono móvil. Los datos almacenados en la tarjeta SD podrían descargarse periódicamente para insertarlos en la app y asegurar su utilización.\\
+
+Un avance que mejoraría de forma significativa la comodidad de uso del prototipo pero que resulta complicada en su implementación es la eliminación del cable que conecta el cinturón con la tobillera, implementando una comunicación inalámbrica entre ambas partes. Esto implicaría además del uso de comunicación inalámbrica por bluetooth/WiFi/radio frecuencia la adición de un microcontrolador adicional en la tobillera, como podría ser el Arduino Nano, lo cual requeriría también otra fuente de alimentación.\\
+

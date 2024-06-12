@@ -1,0 +1,24 @@
+\capitulo{6}{Conclusiones}
+El desarrollo de este proyecto ha concluido con la presentación de una solución tecnológica hardware/software que cumple los principales objetivos propuestos. En este TFG se consiguen ampliar las funciones de la aplicación web, el script Arduino y el hardware utilizado, resultando en un prototipo más cómodo y útil a la hora de evaluar la progresión de la enfermedad de Párkinson.
+
+Evolucionando algunos aspectos del prototipo propuesto, mencionados en el apartado de 'Líneas futuras', este prototipo podría empezar a probarse en pacientes con Párkinson para estudiar su posible uso regular, ya que resulta una herramienta muy útil, económica y sencilla de utilizar para las personas con Párkinson y los profesionales de la Salud que los tratan.
+
+\section{Aspectos relevantes.}
+A pesar del cumplimiento general de los requisitos observados, a lo largo del proyecto se realizaron una serie de cambios en los planteamientos relativos al desarrollo hardware y software:
+
+Uno de los objetivos hardware propuestos en este trabajo era la inclusión del módulo RTC. Este módulo actúa como reloj, por lo cual se planteó como una opción viable para el almacenamiento de la fecha y hora de realización de actividades. Se realizaron pruebas utilizando este sensor en el script Arduino mediante varias bibliotecas específicas para este tipo de módulos. Sin embargo, los mejores resultados fueron la devolución de la fecha y hora de última compilación. Es decir, se consiguió que almacenase la fecha y hora del dispositivo desde el cual se cargaba el código pero no que dicha hora avanzase a partir de esta carga del script.
+
+Durante estas complicaciones a la hora de insertar el RTC, surgió como idea alternativa el almacenamiento de fecha y hora de guardado de la actividad mediante javascript: Los datos de las actividades pasan por una serie de códigos en el backend de la aplicación, incluyendo como último paso el procesamiento de un servidor javascript (server.js) que se encarga de insertar los datos en la base de datos. En este script se incluyó el almacenamiento de fecha y hora, que junto al almacenamiento ya implementado de la duración de la actividad cubrían a la perfección las funciones que habían sido previamente planteadas para el módulo.
+
+Al inicio del proyecto, se planteó la posibilidad de automatizar la calibración del sensor. Esta calibración, resultaba posible tan sólo al conectar mediante cable a un ordenador el prototipo, utilizando el script Arduino de calibración. Debido a la incomodidad derivada de la apertura del prototipo, conexión del mismo y cambio de scripts Arduino surgió la idea de una posible calibración automática llevada a cabo desde la app, incluyendo el script de calibración en el script general.
+
+Sin embargo, tras probar el script de calibración e intentar brevemente su inclusión en el script general para poder utilizarlo sin cambiar códigos desde la página web se llegó a la conclusión de que esto no iba a resultar sencillo y no iba a aportar tanto valor al prototipo, ya que el script de calibración implementa una comunicación serial entre el dispositivo y dicho script que hace que la calibración resulte muy cómoda desde Arduino IDE, y que requeriría un cambio total y grandes complicaciones para cambiar esta comunicación serial y poder interactuar en la calibración desde la página web. Debido a esto, se decidió dejar de lado esta idea, centrando la atención en otros objetivos más relevantes.
+
+Un último aspecto a destacar, es la ejecución de archivos python por parte de la página web para la generacion de gráficas: estos archivos devuelven satisfactoriamente las gráficas requeridas, actualizando con cada ejecución los datos cuando son ejecutados de forma individual en Visual Studio. Las gráficas creadas se almacenan en el mismo directorio donde se encuentran los archivos de código. 
+
+Sin embargo, cuando se intentan ejecutar los archivos python de generación de gráficas desde la página web, de forma previa a la visualización de las mismas, en ocasiones no se actualizan los datos de las gráficas automáticamente, y sencillamente se muestran las imágenes guardadas por última vez en el directorio correspondiente. Esto hace recomendable la ejecución temporal de los archivos python desde Visual Studio, con el objetivo de mostrar datos actualizados en las estadísticas.
+
+
+
+
+

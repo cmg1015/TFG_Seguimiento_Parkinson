@@ -1,0 +1,55 @@
+\apendice{Descripción de adquisición y tratamiento de datos}
+En este apéndice se describe la naturaleza, almacenamiento y utilidad de los datos recogidos por la solución tecnológica propuesta. Se detalla la composición de la base de datos utilizada y la utilidad clínica de los datos almacenados.
+
+\section{Descripción formal de los datos}
+Esta solución tecnológica procesa mayoritariamente 2 tipos de datos: datos sobre parámetros de la marcha del paciente, obtenidos a partir de las funciones de acelerómetro y giroscopio sensor MPU-6050 incluido en el dispositivo hardware y datos sobre la toma de medicaciones y el estado o fluctuaciones motoras del paciente, registrados en los diarios que el paciente puede completar en la aplicación web.
+
+Durante el desarrollo del dispositivo no se han utilizado datos reales de pacientes, por lo cual no ha sido necesario rellenar documentos del comité ético, consentimientos o crear políticas de privacidad de los datos.
+
+Los datos obtenidos por el dispositivo y almacenados desde la aplicación web han sido almacenados en la base de datos 'webparkinson', cuya estructura se detalla a continuación.
+\subsection{Base de datos 'webparkinson'}
+La base de datos 'webparkinson' está compuesta por 8 tablas. 4 de estas tablas, las correspondientes con el almacenamiento de actividades, datos de pacientes, datos de usuarios y relaciones profesional/paciente fueron creadas y explicadas en el TFG \cite{Martos2024}. El propósito de las 4 tablas restantes es explicado a continuación:
+\begin{itemize}
+    \item La tabla 'pautas' almacena los datos sobre la pauta de medicación asignada a un paciente que el profesional introduce desde la aplicación web. Estos datos servirán posteriormente para que dicho paciente los tenga como respuesta predeterminada al rellenar el diario de toma de medicaciones, agilizando por tanto el proceso. 
+
+    Esta tabla está compuesta por 9 columnas:
+    \begin{enumerate}
+        \item La primera columna representa el id de la tabla, es decir, un número asignado de forma automática que representa el número de la fila insertada en la tabla. Es único y por tanto se utiliza como clave primaria de la tabla. Es de tipo int (número entero)
+        \item La columna 'paciente' sirve para guardar el número de identificación del paciente del cual se están guardando registros.
+        \item La columna 'nummed' representa el número de la medicación que representa cada fila. Una pauta de medicaciones puede incluir entre 1 y 5 medicaciones diferentes, las cuales se almacenan como filas separadas. La columna 'nummed' nos permite rellenar de forma predeterminada o no mostrar los diferentes campos del fomulario en el diario de medicaciones del paciente teniendo en cuenta el número de medicaciones introducidas en la pauta. 
+        \item La columna 'medicacion' almacena el nombre de cada medicación. Se trata de una columna de tipo 'text'.
+        \item Las columnas hora 1, hora 2, hora 3, hora 4 y hora 5 almacenarán un valor de tipo 'date' en caso de que la medicación correspondiente tenga dicha hora de toma (por ejemplo si la medicación tiene 3 horas de toma hora 1 hora 2 y hora 3 tendran valores tipo 'date'), mientras que el resto de columnas permanecerán vacías.
+    \end{enumerate}
+    \item La tabla 'personalizacion' almacena los datos de las actividades realizadas durante pruebas de personalización. Tiene la misma estructura que la tabla 'actividades':
+    \begin{enumerate}
+        \item La primera columna es la clave primaria de la tabla y representa el id de la tabla: un número que se incrementa de forma automática con la adición de una nueva fila en la tabla.
+        \item El id del paciente almacena el número de identificación del paciente que está realizando la actividad
+        \item El número de bloqueos totales durante la actividad, se almacena en un dato de tipo 'int.'
+        \item La velocidad media durante la actividad, se almacena en un dato de tipo 'decimal (10,2)'.
+        \item El número de pasos realizados durante la actividad se almacena en un dato de tipo 'int'.
+        \item La duración total de la actividad en minutos se almacena en un dato de tipo 'float'.
+    \end{enumerate}
+    \item La tabla 'diario' almacena los datos registrados en el diario de fluctuaciones motoras, en el que se guardan para una fecha determinada el estadod el paciente (on, off, on con disicnesia o durmiendo) para intervalor horarios de media hora entre las 7:00 y las 00:00. En esta tabla cada intervalo horario se almacena como una fila distinta. La estructura de la tabla es:
+    \begin{enumerate}
+        \item Número de identificación de la tabla: número incrementado de forma automática con la adición de una nueva fila en la tabla que funciona como clave primaria. Es un dato de tipo 'int'.
+        \item Fecha: fecha en la cual se registra el diario. Es un dato de tipo 'date'.
+        \item Hora: Hora de inicio del intervalo horario registrado. Es un dato de tipo 'time'.
+        \item Durmiendo: Dato de tipo 'int' que será igual a 1 en caso de que durmiendo sea el estado seleccionado para la franja horaria o 0 en caso contrario.
+        \item Off status: Dato de tipo 'int' que será igual a 1 en caso de que 'off' sea el estado seleccionado para la franja horaria o 0 en caso contrario.
+        \item On status: Dato de tipo 'int' que será igual a 1 en caso de que 'on' sea el estado seleccionado para la franja horaria o 0 en caso contrario.
+        \item Ondis status: Dato de tipo 'int' que será igual a 1 en caso de que 'on con discinesia' sea el estado seleccionado para la franja horaria o 0 en caso contrario.
+    \end{enumerate}
+    \item La tabla 'diario2' almacena los datos registrados en el diario de tomas de medicación, en el que se guardan para cada fecha las diferentes medicaciones tomadas (1 a 5) y las diferentes tomas (1 a 5) para cada una de las medicaciones. Cada medicación diferente supondrá una nueva fila en la tabla.
+    \begin{enumerate}
+        \item Número de identificación de la tabla: número incrementado de forma automática con la adición de una nueva fila en la tabla que funciona como clave primaria. Es un dato de tipo 'int'.
+        \item Fecha: fecha en la cual se registra el diario. Es un dato de tipo 'date'.
+        \item Medicación: nombre de la medicación de la cual se registra(n) toma(s)
+        \item Hora 1, hora 2, hora 3, hora 4 y hora 5: Horas de tomas de la medicación. En caso de que la medicación requiera menos de 5 tomas el resto de tomas quedarán sin registrar (con valor null o 00:00:00)
+    \end{enumerate}
+\end{itemize}
+\section{Descripción clínica de los datos.}
+El registro de parámetros de la marcha mediante el acelerómetro y giroscopio del sensor MPU-6050, tal y como se desarrolló en los trabajos \cite{Martos2024} \cite{Gonzalez2023}, proporciona valiosa información acerca de la evolución de los síntomas motores de la marcha en pacientes con párkinson. La visualización de estos datos mediante gráficas permite al profesional una herramienta adicional para la monitorización de dichos síntomas.
+
+Por otro lado, el registro de un diario de Hauser \cite{hauser2000home} o diario de fluctuaciones; aporta información subjetiva del paciente acerca de su estado\footnote{Estado ON: Las medicaciones están haciendo efecto y el paciente presenta movimientos más ágiles. Estado ON con discinesia: Adicionalmente el paciente presenta episodios de movimientos involuntarios. Estado OFF: Las medicaciones no están haciendo efecto, el paciente presenta sintomatología motora agravada.} y los síntomas motores que presenta en cada momento del día. Esto resulta una forma efectiva del seguimiento del efecto de medicaciones que ha sido ampliamente utilizada tanto en ensayos clínicos como en consultas de pacientes para evaluar el efecto de una nueva medicación a lo largo de un intervalo de tiempo. Combinar estos datos con las horas de toma de las medicaciones por parte del paciente y los datos registrados en las actividades realizadas permite al profesional evaluar qué medicaciones provocan efectos de discinesia en el paciente, la duración del efecto de estas medicaciones...
+
+En definitiva, garantizar una monitorización exhaustiva de los síntomas motores en pacientes con Párkinson facilita las decisiones del profesional sanitario a la hora de adaptar la pauta de medicaciones a la progresión de la enfermedad y las circunstancias del paciente

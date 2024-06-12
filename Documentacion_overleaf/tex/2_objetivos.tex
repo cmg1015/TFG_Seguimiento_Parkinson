@@ -1,0 +1,48 @@
+\capitulo{2}{Objetivos}
+Este proyecto busca desarrollar una solución tecnológica hadware/software para el monitoreo de actividades y fluctuaciones motoras en pacientes con párkinson, consistente en un cinturón con una placa y otros módulos Arduino conectado a una tobillera con un sensor giroscopio/acelerómetro y una aplicación web. \\ \\
+Mediante la comunicación bidireccional constante entre el hardware Arduino y el backend de la aplicación web se consigue registrar en tiempo real las actividades realizadas con su correspondiente fecha y hora, así como la reacción en tiempo real a los bloqueos detectados, contribuyendo a la reanudación de la marcha mediante la proyección de una línea láser en el suelo.\\ \\
+La utilización regular de la aplicación web y el dispositivo permite obtener y analizar información relativa a la toma de medicaciones, fluctuaciones ON/OFF detectadas por el paciente y las actividades realizadas. El análisis de este conjunto de información supone una herramienta útil para la evaluación del progreso de la enfermedad y del tratamiento actual.
+\subsection{Objetivos principales}
+\begin{enumerate}
+    \item Diseñar y construir un prototipo hardware consistente en un cinturón y una tobillera, que resulte cómodo y de bajo coste y que reaccione al detectar una congelación de la marcha mediante una proyección de línea láser en el suelo.
+    \item Implementar funcionalidades software para la personalización del funcionamiento del hardware desde la aplicación web y el registro de tomas de medicación y sintomatología diario, el cual será analizado para obtener datos relevantes sobre la evolución de la enfermedad y la efectividad del tratamiento.
+\end{enumerate}
+
+\subsection{Objetivos de hardware}
+\begin{enumerate}
+    \item Diseñar un prototipo que, contando con todos los módulos descritos en el trabajo de fin de grado \cite{Martos2024}, resulte flexible y pueda colocarse en un cinturón con compartimentos para una mayor comodidad del usuario. 
+    \item Añadir un componente de módulo láser, que proyecte una línea en el suelo al detectar un bloqueo muscular con cese de la marcha para ayudar al paciente a reanudarla.
+    \item Agregar un componente RTC, con el objetivo de registrar la fecha y hora de realización de las actividades.
+\end{enumerate}
+
+\subsection{Objetivos de desarrollo software}
+\subsubsection{Funciones de la aplicación web}
+\begin{enumerate}
+    \item Agregar una prueba de personalización, que permita registrar una actividad con ciertas particularidades: se omitirá la detección de bloqueos y se permitirá la finalización y guardado de resultados tan sólo si se han superado los 10 pasos. Esta prueba se utilizará para registrar el tiempo medio que tarda el paciente en dar un paso, y a partir de ello determinar el número de segundos en reposo que debe detectar el sensor para detectar un bloqueo muscular con cese de la marcha. 
+    Estas pruebas se guardarán en una tabla separada de la base de datos y el número de segundos determinado será enviado al hardware, que funcionará acorde al mismo desde ese momento en adelante.
+    \item Como nueva funcionalidad del tipo de usuario 'profesional', se podrá agregar una pauta de medicación determinada a cada paciente.
+    \item Como nueva funcionalidad del tipo de usuario 'paciente' se incluye la posibilidad de registrar un diario, en el que se registrarán las tomas de medicación y los estados ON/OFF del paciente. Al resultar normalmente repetitivas las tomas de medicación diarias, se establecerán como respuestas predeterminadas al formulario la pauta de medicación que el profesional haya asignado al paciente.
+\end{enumerate}
+\subsubsection{Funciones del código Arduino}
+\begin{enumerate}
+    \item Manejar de forma adecuada el encendido y apagado del módulo láser tras la detección de cese de la marcha.
+    \item Manejo del módulo RTC, almacenando junto con la información de la actividad (bloqueos, tiempo, pasos...) la fecha y hora en la que ha sido realizada, y enviando dichos valores de forma adecuada a los archivos de código correspondientes al backend de la aplicación web.
+    \item Flexibilizar la detección de bloqueos, cambiando el número fijo de segundos de reposo del sensor a partir de los cuales se detecta un cese de la marcha (5 segundos) por un número variable entre 1 y 20 segundos, en función de la información recibida desde la app.
+\end{enumerate}
+%Objetivos principales del trabajo realizado.
+
+
+%Este apartado explica de forma precisa y concisa cuales son los objetivos que se persiguen con la realización del proyecto. Se puede distinguir entre:
+%\begin{enumerate}
+ %   \item Los objetivos marcados por los requisitos del software/hardware/análisis a desarrollar.
+  %  \item Los objetivos de carácter técnico, relativos a la calidad de los resultados, velocidad de ejecución, fiabilidad o similares.
+   % \item Los objetivos de aprendizaje, relativos a aprender técnicas o herramientas de interés. 
+%\end{enumerate}
+
+
+
+
+
+
+
+

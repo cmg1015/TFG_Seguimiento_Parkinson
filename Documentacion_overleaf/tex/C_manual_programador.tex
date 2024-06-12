@@ -1,0 +1,94 @@
+\apendice{Manual del desarrollador/ programador.}
+
+\section{Estructura de directorios}
+En el directorio de GitHub \cite{MarcosGordillo2024}, al cual se puede acceder mediante el link \url{https://github.com/cmg1015/TFG_Seguimiento_Parkinson}, se muestran las siguientes carpetas y ficheros:
+\begin{itemize}
+    \item Carpeta WebVisualStudio: Muestra la carpeta que contiene todos los archivos de código necesarios para el funcionamiento de la aplicación web, incluyendo bibliotecas que se utilizan en dichos códigos. Dentro de la carpeta 'database' se incluye también un documento .sql que contiene la base de datos 'webparkinson', la cual puede importarse utilizando las funciones de phpmyadmin y MySQL disponibles con la aplicación XAMPP. El archivo comprimido WebVisualStudio.rar contiene exactamente los mismos archivos, proporcionando una manera más sencilla de descargar la carpeta.
+    \item Carpeta WebVisualStudioCodigo: Contiene tan sólo los archivos de código necesarios para el funcionamiento de la aplicación y el documento .sql con la base de datos 'webparkinson'. El archivo comprimido WebVisualStudioCodigo.zip contiene exactamente los mismos archivos, permitiendo descargarlos de forma más cómoda.
+    \item Carpeta Videos: Contiene acceso a los vídeos de pruebas y demostraciones de las nuevas funciones que aporta este proyecto a la solución tecnológica.
+    \item Carpeta Arduino: Contiene 2 versiones del script Arduino general (Versión para láser y RTC; Versión guardando la duración de la actividad correctamente y sin utilizar el módulo RTC) y el script de calibración del sensor MPU-6050.
+\end{itemize}
+
+A continuación se explicará con más detalle el contenido de la carpeta WebVisualStudioCodigo, profundizando en las funciones de los archivos de código nuevos o modificados y nombrando los archivos conservados desde la versión anterior del proyecto \cite{Martos2024}.
+\begin{itemize}
+    \item Carpeta 'admin': Esta carpeta contiene los archivos de código .php relacionados con las funciones del usuario de tipo 'administrador'. Estos archivos son:
+    \begin{itemize}
+        \item 'crearUsuario.php'
+        \item 'crearUsuarioHTML.php'
+        \item 'eliminarUsuario.php'
+        \item 'inicioAdmin.php'
+        \item 'listadoPacientes.php'
+        \item 'menu.php'
+    \end{itemize}
+    \item Carpeta 'bluetooth': Esta carpeta contiene los archivos necesarios para la comunicación bluetooth bidireccional entre el dispositivo y la aplicación web y base de datos. Estos archivos son:
+    \begin{itemize}
+        \item '/bluetooth/ArduinoBridge/bridge.py'
+        \item '/bluetooth/ArduinoServer/server.js': Servidor web que utiliza Node.js para gestionar la comunicación y los datos del sistema, programado en JavaScript. Proporciona una serie de endpoints \footnote{Puntos de acceso en una aplicación web que pueden enviar solicitudes para realizar operaciones específicas.}, entre los cuales se modificó el endpoint /guardarActividad para generar datos de fecha y hora de guardado y almacenarlos junto al resto de datos y se creó el endpoint /guardarPersonalización para almacenar datos sobre las pruebas de personalización en la tabla 'actividades' de la base de datos.
+    \end{itemize}
+    \item Carpeta 'common': Esta carpeta contiene archivos comunes en usuarios de tipo 'profesional' y 'paciente'. Estos archivos son:
+    \begin{itemize}
+        \item 'actividad.php'
+        \item 'actividades.json'
+        \item 'actualizarCorreo.php'
+        \item 'borrar.py'
+        \item 'cambiarContraseña.php'
+        \item 'cambiarContraseñaHTML.php'
+        \item 'consultaActividades.php'
+        \item 'eliminarCuenta.php'
+        \item 'estadisticas.py': Este archivo se creó con el objetivo de generar de forma automática gráficas relacionadas con los datos registrados de las actividades.
+        \item 'graficas.php': Este archivo se creó para mostrar en la página web la página de acceso a las gráficas. Ejecuta los archivos .py de generación de gráficas y ofrece las opciones de mostrar/esconder cada una de las gráficas.
+        \item 'grafdiarios.py': Archivo creado para la generación de una gráfica que muestra los estados de la persona a lo largo de un día (según los datos del diario de fluctuaciones motoras), mostrando también las horas de toma de cada medicación. Esto puede permitir por ejemplo detectar qué medicaciones están teniendo como efecto secundario episodios de discinesia, cuánto tardan en actuar las medicaciones, cuánto dura el efecto...
+        \item 'graficasmed.py': Archivo creado para comparar los bloqueos por minuto en actividades realizadas en cada uno de los estados. Este archivo reúne los datos de todas las actividades cuya fecha y hora de realización tenga un estado especificado en el diario de fluctuaciones (es decir, las actividades de los días en que se haya rellenado dicho diario) y hace una comparación entre los bloqueos/minuto totales en actividades realizadas en estado 'on', 'off' y 'on con discinesia'.
+        \item 'login.html'
+        \item 'login.php'
+        \item 'logout.php'
+        \item 'pdf.php': Archivo que ejecuta el archivo 'pdf.py' y descarga el pdf generado.
+        \item 'pdf.py': Archivo que genera un informe en .pdf con los datos del paciente, estadísticas (medias de los diferentes parámetros) y los datos de las actividades registradas.
+        \item 'pdf2.php': Archivo que ejecuta el archivo 'pdf2.py' y descarga el pdf generado.
+        \item 'pdf2.py': Archivo que genera un informe en .pdf idéntico al generado por 'pdf.py' incluyendo adicionalmente gráficas.
+    \end{itemize}
+    \item Carpeta 'database': Contiene el archivo 'webparkinson.sql', que se corresponde con la base de datos utilizado durante el proyecto.
+    \item Carpeta 'js'; contiene el archivo 'confirmacion.js'. En este archivo se modificó la función confirmarAccion(accion), añadiendo la acción finalizarPersonalizacion, la cual envía una solicitud al servidor server.js mediante el siguiente link para solicitar el guardado de datos de la prueba de personalización en la tabla 'actividades' de la base de datos:
+    
+    \url{'http://localhost:3000/guardarPersonalizacion'} 
+    \item Carpeta 'paciente': Esta carpeta contiene los archivos relacionados con las funciones del usuario de tipo 'paciente'. Estos archivos son:
+    \begin{itemize}
+        \item 'diarioestado.php': Formulario creado para permitir rellenar el diario de Hauser o diario de fluctuaciones motoras desde la página web.
+        \item 'diarios.php': Archivo creado para dar acceso a los formularios creados por los archivos 'diarioestado.php' y 'diariotomas.php', dando también instrucciones y explicaciones sobre cada uno de ellos y mostrando si han sido ya rellenados o no.
+        \item 'diariotomas.php': Formulario creado para permitir rellenar el diario de tomas de medicaciones desde la página web.
+        \item 'inicioPaciente.php'
+        \item 'menu.php'
+        \item 'procesardiario.php': Archivo creado para procesar las respuestas del formulario 'diarioestados.php', almacenándolas en la base de datos.
+        \item 'procesardiario2.php': Archivo creado para procesar las respuestas del formulario 'diariotomas.php', almacenándolas en la base de datos.
+    \end{itemize}
+    \item Carpeta 'profesional': Esta carpeta contiene archivos relacionados con las funciones del usuario de tipo 'profesional'. Estos archivos osn:
+    \begin{itemize}
+        \item 'asignarPaciente.php'
+        \item 'infoPaciente.php'
+        \item 'inicioProfesional.php'
+        \item 'menu.php'
+        \item 'mostrarPacientes.php'
+        \item 'nuevoPaciente.php'
+        \item 'nuevoPacienteHTML.php'
+        \item 'pautas.php': Este archivo se creó para mostrar un formulario, similar al mostrado en /paciente/diariotomas.php, para asignar una pauta de medicación a un paciente en concreto del cual se especifica el número de identificación.
+        \item 'personalizarbloqueo.php' Este archivo se creó para permitir la realización de pruebas de personalización del tiempo a partir del cual se detecta un congelamiento de la marcha. A partir de los datos recogidos relativos a los segundos que tarda de media el paciente en dar un paso se calcula el número de segundos óptimo, el cual se pasa como comando al servidor web server.js en el link \url{'http://localhost:3000/datos'}. Esto permitirá el envío de dichos comandos al script arduino, que adaptará el tiempo de detección de congelamiento de la marcha acorde a ellos.
+        \item 'procesarpautas.php'; Archivo creado para procesar las respuestas al formulario 'pautas.php' y almacenarlas en la base de datos.
+        \item 'quitarPaciente.php'
+    \end{itemize}
+\end{itemize}
+
+\section{Pruebas del sistema}
+La validación de la interfaz por parte de potenciales usuarios se detalla en el anexo G, mediante la realización de una encuesta. Por otro lado, la validación del funcionamiento del sistema puede comprender varios puntos:
+\begin{itemize}
+    \item Comprobación de la correcta conexión del dispositivo bluetooth y comunicación bidireccional de comandos: Tras conectar el dispositivo mediante bluetooth y ajustar el puerto COM tal y como se describe en la figura \ref{fig:bridgepy}; es necesario comprobar que se está llevando a cabo una correcta comunicación con el dispositivo Arduino. En caso de éxito, al ejecutar el archivo 'bridge.py' tras haber ejecutado el servidor web con el comando node server.js (tal y como se explica en el anexo B), deberíamos observar en la terminal de Visual Studio algo similar a lo mostrado en la figura \ref{fig:bridgeejecutando}.
+    \item Comprobación del correcto funcionamiento de las distintas funciones de la aplicación web: Esto puede realizarse mediante comprobaciones con datos ficticios, tal y como se muestra en los Vídeos de demostraciones del repositorio GitHub \cite{MarcosGordillo2024}.
+\end{itemize}
+
+\section{Instrucciones para la modificación o mejora del proyecto.}
+Con el objetivo de proseguir con la mejora del proyecto, pueden tenerse en cuenta las guías generales sugeridas en el apartado 'Líneas futuras' de la memoria del proyecto. En este apartado se presentan algunas sugerencias más técnicas:
+\begin{itemize}
+    \item Automatizar los procesos que deben llevarse a cabo para asegurar la conexión del dispositivo con la aplicación de forma manual en Visual Studio: La ejecución del archivo 'bridge.py' o el arranque del servidor web server.js podrían realizarse de forma automática al iniciar una actividad que requiera la conexión del dispositivo, dejando como único paso manual la conexión del dispositivo al ordenador.
+    \item Ajustar el frontend de la página web para hacerlo responsivo: Ajustar los estilos de la aplicación web de modo que al acceder desde diferentes tamaños de pantalla se muestre el contenido de forma adecuada. Actualmente tan sólo algunos estilos funcionan de manera responsiva, haciendo que el acceso a la web desde dispositivos de tamaños diferentes o simplemente con la pantalla minimizada resulte complicado. Esto puede realizarse por ejemplo ajustando los estilos CSS expresados en pixels a porcentajes de la pantalla o adaptando el diseño de la web a las dimensiones de la pantalla en que se muestra.
+    \item Añadir una tarjeta SD al dispositivo, permitiendo almacenar los datos de actividades durante un periodo de tiempo y posteriormente cargarlos en la base de datos, pudiendo visualizar y analizar dichos datos.
+    \item Añadir sensores MPU-6050, ya sea utilizando un duplicado del sensor en la ubicación actual, aportando una mayor precisión y un indicador fiable de cuándo es necesario calibrarlos u añadiendo sensores en otras ubicaciones, como dentro del cinturón o en el tobillo derecho.
+\end{itemize}
