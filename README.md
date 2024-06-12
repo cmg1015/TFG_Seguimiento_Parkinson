@@ -13,7 +13,7 @@ En este trabajo se rediseña el dispositivo hardware, otorgando nuevas funcional
 - Memoria_Carmen_Marcos.pdf: Documento que contiene la memoria del proyecto.
 - Web_VisualStudio.rar: Archivo comprimido descargable con el contenido de la carpeta Web_VisualStudio/.
 - Web_VisualStudioCodigo.zip: Archivo comprimido descargable con el contenido de la carpeta Web_VisualStudioCodigo/.
-- Videos/: Carpeta que contiene acceso a una serie de vídeos que muestran el funcionamiento del sistema.
+- Videos.md: Archivo que contiene acceso a una serie de vídeos que muestran el funcionamiento del sistema.
 ## Resumen 
 La enfermedad de Párkinson representa el trastorno neurodegenerativo del movimiento más común, presentando en Europa una prevalencia de 108-257 casos por cada 100 000 habitantes. Los pacientes de Párkinson presentan frecuentemente como síntoma bloqueos musculares que derivan en congelación de la marcha.
 
