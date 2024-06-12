@@ -5,9 +5,12 @@ Trabajo de Fin de Grado de Ingeniería de la Salud orientado a la continuación 
 En este trabajo se rediseña el dispositivo hardware, otorgando nuevas funcionalidades y mejorando la experiencia del usuario. Adicionalmente, se incorpora nuevo software a la aplicación web con el objetivo de lograr el almacenamiento diario por parte del paciente de tomas de medicaciones y fluctuaciones motoras, la personalización de la detección de congelamiento de la marcha por parte del sensor, la visualización de gráficas con los datos recogidos y la descarga de informes en pdf por parte del profesional.
 ## Estructura del repositorio
 - Arduino/: Carpeta que contiene los scripts de Arduino utilizados durante el proyecto.
+- Documentacion_overleaf/: Carpeta que contiene todos los documentos generados mediante LaTex para la documentación del proyecto.
 - Web_VisualStudio/: Carpeta que contiene los archivos de código que componen el frontend y backend de la aplicación web presentada, junto con algunas bibliotecas y recursos software utilizados durante el proyecto.
 - Web_VisualStudioCodigo/: Carpeta que contiene tan sólo los archivos de código que componen el frontend y backend de la aplicación web presentada.
-- LICENSE: Documento de la licencia utilizada en este proyecto.
+- Anexos_Carmen_Marcos.pdf: Documento que contiene los anexos (documentación técnica) del proyecto.
+- LICENSE: Documento de la licencia Apache 2.0 utilizada en este proyecto.
+- Memoria_Carmen_Marcos.pdf: Documento que contiene la memoria del proyecto.
 - Web_VisualStudio.rar: Archivo comprimido descargable con el contenido de la carpeta Web_VisualStudio/.
 - Web_VisualStudioCodigo.zip: Archivo comprimido descargable con el contenido de la carpeta Web_VisualStudioCodigo/.
 - Videos/: Carpeta que contiene acceso a una serie de vídeos que muestran el funcionamiento del sistema.
