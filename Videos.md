@@ -1,0 +1,2 @@
+## Videos de demostración del funcionamiento de la solución tecnológica
+Los vídeos de prueba de la solución tecnológica propuesta pueden accederse mediante [OneDrive](https://universidaddeburgos-my.sharepoint.com/:f:/g/personal/cmg1015_alu_ubu_es/Eocl93411UFIvMl9kKhXnisBp1v9VYRrG6v8-aaKXsXbVQ?e=uNeiGm) , accediendo al link <https://universidaddeburgos-my.sharepoint.com/:f:/g/personal/cmg1015_alu_ubu_es/Eocl93411UFIvMl9kKhXnisBp1v9VYRrG6v8-aaKXsXbVQ?e=uNeiGm>
